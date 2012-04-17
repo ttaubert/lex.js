@@ -1,58 +1,55 @@
-function token(def, callback) {
-  if (def instanceof RegExp)
-    return new Token(def, callback);
-
-  throw "invalid token definition";
+function LexerContext(input) {
+  this.input = input;
 }
 
-function Lexer(tokens) {
-  this.tokens = tokens;
+LexerContext.prototype = {
+  input: null,
 
-  for (var type in this.tokens) {
-    var def = this.tokens[type];
-    if (!(def instanceof Token)) {
-      this.tokens[type] = token(def);
-    }
+  ignore: function Context_ignore() {
+  },
+
+  skip: function Context_skip(num) {
+    this.input = this.input.slice(num);
   }
+};
+
+function LexerIterator(tokens, input) {
+  this.tokens = tokens;
+  this.context = new LexerContext(input);
 }
 
-Lexer.prototype = {
+LexerIterator.prototype = {
   tokens: null,
+  context: null,
 
-  tokenize: function Lexer_tokenize(input) {
-    var lexeme;
-    var lexemes = [];
+  next: function LexerIterator_next() {
+    var next;
+    var context = this.context;
 
-    var context = {
-      skip: function Context_skip(num) {
-        input = input.slice(num);
-      },
-
-      ignore: function Context_ignore() {
-        lexeme = null;
-      }
+    context.ignore = function Context_ignore() {
+      next = null;
     };
 
-    loop: while (input.length) {
+    loop: while (context.input.length) {
       // iterate through and match all tokens
-      for (var type in this.tokens) {
-        var token = this.tokens[type];
-        var value = token.match(input);
+      for (var name in this.tokens) {
+        var token = this.tokens[name];
+        var value = token.match(context.input);
 
         if (value) {
           // skip the lexeme we just found
           context.skip(value.length);
 
           // create the lexeme
-          lexeme = new Lexeme(type, value);
+          next = {token: name, value: value};
 
           // call the token callback if any
           if (token.callback) {
-            token.callback(context, lexeme);
+            token.callback(context, next);
           }
 
-          if (lexeme) {
-            lexemes.push(lexeme);
+          if (next) {
+            return next;
           }
 
           continue loop;
@@ -62,8 +59,25 @@ Lexer.prototype = {
       // nothing found
       context.skip(1);
     }
+  }
+};
 
-    return lexemes;
+function Lexer(tokens) {
+  this.tokens = tokens;
+
+  for (var name in this.tokens) {
+    var def = this.tokens[name];
+    if (!(def instanceof Token)) {
+      this.tokens[name] = token(def);
+    }
+  }
+}
+
+Lexer.prototype = {
+  tokens: null,
+
+  tokenize: function Lexer_tokenize(input) {
+    return new LexerIterator(this.tokens, input);
   }
 };
 
@@ -86,15 +100,12 @@ Token.prototype = {
   }
 };
 
-function Lexeme(type, value) {
-  this.type = type;
-  this.value = value;
-}
+function token(def, callback) {
+  if (def instanceof RegExp)
+    return new Token(def, callback);
 
-Lexeme.prototype = {
-  type: null,
-  value: null
-};
+  throw "invalid token definition";
+}
 
 exports.token = token;
 exports.Lexer = Lexer;

@@ -18,17 +18,19 @@ var tokens = {
 };
 
 var lexer = new lex.Lexer(tokens);
-lexer.tokenize("3 + 5 * 6 - 7").forEach(function (lexeme) {
-  console.log("[" + lexeme.type + ", " + lexeme.value + "]");
-});
+var iter = lexer.tokenize("3 + 5 * 6 - 7");
+
+for (var lexeme; lexeme = iter.next();) {
+  console.log(lexeme);
+}
 ```
 
 This will output the following:
 
-    [number, 3]
-    [plus, +]
-    [number, 5]
-    [times, *]
-    [number, 6]
-    [minus, -]
-    [number, 7]
+    { token: 'number', value: 3 }
+    { token: 'plus', value: '+' }
+    { token: 'number', value: 5 }
+    { token: 'times', value: '*' }
+    { token: 'number', value: 6 }
+    { token: 'minus', value: '-' }
+    { token: 'number', value: 7 }
