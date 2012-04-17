@@ -35,7 +35,58 @@ This will output the following:
     { token: 'minus', value: '-' }
     { token: 'number', value: 7 }
 
-# Example #2 - PHP tokenizer (small subset)
+# Example #2 - JSON tokenizer
+
+```javascript
+var tokens = {
+  values: /true|false|null/,
+  character: /[\[\]\{\},:]/,
+
+  number: lex.token(/-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][\+\-]?\d+)?/, function (ctx, lexeme) {
+    lexeme.value = +lexeme.value;
+  }),
+
+  string: lex.token(/"((?:\\\\|\\\/|\\"|\\n|\\b|\\r|\\f|\\t|\\u[\da-fA-F]{4}|[^"\\])*)?"/, function (ctx, lexeme) {
+    lexeme.value = lexeme.value.slice(1, -1);
+  }),
+
+  // skip white spaces
+  whitespace: lex.token(/\s+/, function (ctx, lexeme) {
+    ctx.ignore();
+  }),
+
+  // throw for unexpected characters
+  unexpected: lex.token(/./, function (ctx, lexeme) {
+    throw "Unexpected character '" + lexeme.value + ".";
+  })
+};
+
+var lexer = new lex.Lexer(tokens);
+var data = JSON.stringify({foo: "bar", array: [25, 1.4e-32]});
+var iter = lexer.tokenize(data);
+
+for (var lexeme; lexeme = iter.next();) {
+  console.log(lexeme);
+}
+```
+
+The resulting lexemes:
+
+    { token: 'character', value: '{' }
+    { token: 'string', value: 'foo' }
+    { token: 'character', value: ':' }
+    { token: 'string', value: 'bar' }
+    { token: 'character', value: ',' }
+    { token: 'string', value: 'array' }
+    { token: 'character', value: ':' }
+    { token: 'character', value: '[' }
+    { token: 'number', value: 25 }
+    { token: 'character', value: ',' }
+    { token: 'number', value: 1.4e-32 }
+    { token: 'character', value: ']' }
+    { token: 'character', value: '}' }
+
+# Example #3 - PHP tokenizer (small subset)
 
 ```javascript
 var tokens = {
