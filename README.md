@@ -2,7 +2,7 @@
 `lex.js` is a regex-based lexical analyzer for JavaScript. Here's a quick example of using it to tokenize a simple language:
 
 ```javascript
-let tokens = {
+var tokens = {
   plus: /\+/,
   minus: /-/,
   times: /\*/,
@@ -17,10 +17,10 @@ let tokens = {
   })
 };
 
-let lexer = new lex.Lexer(tokens);
-for (let lexeme in lexer.tokenize("3 + 5 * 6 - 7")) {
+var lexer = new lex.Lexer(tokens);
+lexer.tokenize("3 + 5 * 6 - 7").forEach(function (lexeme) {
   print("[" + lexeme.type + ", " + lexeme.value + "]");
-}
+});
 ```
 
 This will output the following:
