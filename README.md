@@ -19,7 +19,7 @@ var tokens = {
 
 var lexer = new lex.Lexer(tokens);
 lexer.tokenize("3 + 5 * 6 - 7").forEach(function (lexeme) {
-  print("[" + lexeme.type + ", " + lexeme.value + "]");
+  console.log("[" + lexeme.type + ", " + lexeme.value + "]");
 });
 ```
 
