@@ -18,7 +18,6 @@ let tokens = {
 };
 
 let lexer = new lex.Lexer(tokens);
-
 for (let lexeme in lexer.tokenize("3 + 5 * 6 - 7")) {
   print("[" + lexeme.type + ", " + lexeme.value + "]");
 }
