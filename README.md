@@ -1,5 +1,5 @@
 # lex.js
-`lex.js` is a regex-based lexical analyzer for JavaScript. Here's a quick example of using it to parse a simple language:
+`lex.js` is a regex-based lexical analyzer for JavaScript. Here's a quick example of using it to tokenize a simple language:
 
 ```javascript
 let tokens = {
