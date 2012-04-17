@@ -57,7 +57,7 @@ var tokens = {
 
   // throw for unexpected characters
   unexpected: lex.token(/./, function (ctx, lexeme) {
-    throw "Unexpected character '" + lexeme.value + ".";
+    throw "Unexpected character '" + lexeme.value + "'.";
   })
 };
 
