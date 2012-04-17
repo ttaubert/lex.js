@@ -39,7 +39,7 @@ This will output the following:
 
 ```javascript
 var tokens = {
-  values: /true|false|null/,
+  value: /true|false|null/,
   character: /[\[\]\{\},:]/,
 
   number: lex.token(/-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][\+\-]?\d+)?/, function (ctx, lexeme) {
