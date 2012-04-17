@@ -62,7 +62,7 @@ var tokens = {
 
   // throw for unexpected characters
   unexpected: lex.token(/./, function (ctx, lexeme) {
-    var line = ctx.lineno || 0;
+    var line = ctx.lineno || 1;
     throw "Unexpected character '" + lexeme.value + "' at line " + line + ".";
   })
 };
